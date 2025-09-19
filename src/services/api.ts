@@ -79,11 +79,10 @@ export interface Booking {
 }
 
 export interface CreateBookingRequest {
-  firstName: string;
-  lastName: string;
-  vehicleId: string;
-  startDate: string;
-  endDate: string;
+  user_id: string;
+  vehicle_id: string;
+  start_date: string;
+  end_date: string;
 }
 
 // Backend API Response Format
@@ -110,8 +109,8 @@ export const vehiclesAPI = {
   getById: (id: string) => api.get<ApiResponse<Vehicle>>(`/vehicles/${id}`),
   checkAvailability: (id: string, startDate?: string, endDate?: string) => {
     const params = new URLSearchParams();
-    if (startDate) params.append('startDate', startDate);
-    if (endDate) params.append('endDate', endDate);
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
     const query = params.toString() ? `?${params.toString()}` : '';
     return api.get<
       ApiResponse<{ available: boolean; conflictingBookings?: Booking[] }>
@@ -122,8 +121,12 @@ export const vehiclesAPI = {
 export const usersAPI = {
   getAll: () => api.get<ApiResponse<User[]>>('/users'),
   getById: (id: string) => api.get<ApiResponse<User>>(`/users/${id}`),
-  create: (userData: { firstName: string; lastName: string; email?: string }) =>
-    api.post<ApiResponse<User>>('/users', userData),
+  create: (userData: {
+    first_name: string;
+    last_name: string;
+    email?: string;
+    phone?: string;
+  }) => api.post<ApiResponse<User>>('/users', userData),
   checkEmailAvailability: (email: string) =>
     api.get<ApiResponse<{ available: boolean }>>(`/users/check-email/${email}`),
 };

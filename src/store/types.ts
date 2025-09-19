@@ -2,6 +2,8 @@
 export interface FormData {
   firstName: string;
   lastName: string;
+  email: string;
+  phone: string;
   numberOfWheels: string;
   vehicleType: string;
   vehicleModel: string;
@@ -34,6 +36,8 @@ export interface VehicleModel {
 export interface FormErrors {
   firstName?: string;
   lastName?: string;
+  email?: string;
+  phone?: string;
   numberOfWheels?: string;
   vehicleType?: string;
   vehicleModel?: string;

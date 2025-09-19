@@ -14,6 +14,8 @@ const initialState: FormState = {
   data: {
     firstName: '',
     lastName: '',
+    email: '',
+    phone: '',
     numberOfWheels: '',
     vehicleType: '',
     vehicleModel: '',
@@ -22,7 +24,7 @@ const initialState: FormState = {
   },
   errors: {},
   currentStep: 1,
-  totalSteps: 5,
+  totalSteps: 6,
   isValid: false,
   isDirty: false,
 };

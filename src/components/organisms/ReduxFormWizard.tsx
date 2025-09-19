@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Alert } from '@mui/material';
+import { Box, Alert, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store';
 import {
   updateFormField,
@@ -21,12 +21,14 @@ import {
 import {
   fetchVehicleTypes,
   fetchVehicleModels,
+  fetchAvailableVehicleModels,
 } from '../../store/slices/vehiclesSlice';
 import { setSubmitting, addNotification } from '../../store/slices/uiSlice';
 import { submitBooking } from '../../services/bookingService';
 import QuestionScreen from './QuestionScreen';
 import {
   NameFields,
+  ContactFields,
   NumberOfWheelsSelector,
   VehicleTypeSelector,
   VehicleModelSelector,
@@ -64,7 +66,7 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
     selectFilteredVehicleModels(formData.vehicleType)
   );
 
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   // Load vehicle types when number of wheels changes
   useEffect(() => {
@@ -75,13 +77,33 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
     }
   }, [formData.numberOfWheels, dispatch]);
 
+  // Reset vehicle selections when dates change
+  useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      // Reset vehicle selections when dates change
+      dispatch(resetVehicleType());
+    }
+  }, [formData.startDate, formData.endDate, dispatch]);
+
   // Load vehicle models when vehicle type changes
   useEffect(() => {
     if (formData.vehicleType) {
-      dispatch(fetchVehicleModels(formData.vehicleType));
+      // If dates are selected, fetch only available vehicles
+      if (formData.startDate && formData.endDate) {
+        dispatch(
+          fetchAvailableVehicleModels({
+            typeId: formData.vehicleType,
+            startDate: formData.startDate,
+            endDate: formData.endDate,
+          })
+        );
+      } else {
+        // Otherwise fetch all vehicles of this type
+        dispatch(fetchVehicleModels(formData.vehicleType));
+      }
       dispatch(resetVehicleModel());
     }
-  }, [formData.vehicleType, dispatch]);
+  }, [formData.vehicleType, formData.startDate, formData.endDate, dispatch]);
 
   // Notify parent of step changes
   useEffect(() => {
@@ -102,21 +124,18 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
         }
         break;
       case 2:
-        if (!formData.numberOfWheels) {
-          errors.numberOfWheels = 'Please select number of wheels';
+        if (!formData.email.trim()) {
+          errors.email = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+          errors.email = 'Please enter a valid email address';
+        }
+        if (!formData.phone.trim()) {
+          errors.phone = 'Phone number is required';
+        } else if (!/^\+?[\d\s\-()]{10,20}$/.test(formData.phone)) {
+          errors.phone = 'Please enter a valid phone number';
         }
         break;
       case 3:
-        if (!formData.vehicleType) {
-          errors.vehicleType = 'Please select a vehicle type';
-        }
-        break;
-      case 4:
-        if (!formData.vehicleModel) {
-          errors.vehicleModel = 'Please select a vehicle model';
-        }
-        break;
-      case 5:
         if (!formData.startDate) {
           errors.startDate = 'Start date is required';
         }
@@ -131,6 +150,22 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
           errors.endDate = 'End date must be after start date';
         }
         break;
+      case 4:
+        if (!formData.numberOfWheels) {
+          errors.numberOfWheels = 'Please select number of wheels';
+        }
+        break;
+      case 5:
+        if (!formData.vehicleType) {
+          errors.vehicleType = 'Please select a vehicle type';
+        }
+        break;
+      case 6:
+        console.log('Step 6 validation - vehicleModel:', formData.vehicleModel);
+        if (!formData.vehicleModel) {
+          errors.vehicleModel = 'Please select a vehicle model';
+        }
+        break;
     }
 
     dispatch(setFormErrors(errors));
@@ -140,11 +175,13 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
   // Event handlers
   const handleInputChange =
     (field: keyof FormData) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      console.log('Field changed:', field, 'Value:', event.target.value);
       dispatch(updateFormField({ field, value: event.target.value }));
     };
 
   const handleNext = async (): Promise<void> => {
     if (!validateStep(currentStep)) {
+      console.log('validation failed....');
       return;
     }
 
@@ -214,39 +251,16 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
         );
       case 2:
         return (
-          <NumberOfWheelsSelector
-            value={formData.numberOfWheels}
-            onChange={handleInputChange('numberOfWheels')}
-            error={formErrors.numberOfWheels}
+          <ContactFields
+            email={formData.email}
+            phone={formData.phone}
+            onEmailChange={handleInputChange('email')}
+            onPhoneChange={handleInputChange('phone')}
+            emailError={formErrors.email}
+            phoneError={formErrors.phone}
           />
         );
       case 3:
-        return (
-          <VehicleTypeSelector
-            value={formData.vehicleType}
-            onChange={handleInputChange('vehicleType')}
-            vehicleTypes={filteredVehicleTypes}
-            numberOfWheels={
-              formData.numberOfWheels
-                ? parseInt(formData.numberOfWheels)
-                : undefined
-            }
-            loading={vehicleTypesLoading}
-            error={formErrors.vehicleType}
-          />
-        );
-      case 4:
-        return (
-          <VehicleModelSelector
-            value={formData.vehicleModel}
-            onChange={handleInputChange('vehicleModel')}
-            vehicleModels={filteredVehicleModels}
-            selectedTypeId={formData.vehicleType}
-            loading={vehicleModelsLoading}
-            error={formErrors.vehicleModel}
-          />
-        );
-      case 5:
         return (
           <DateRangePicker
             startDate={formData.startDate}
@@ -264,6 +278,40 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
             }
           />
         );
+      case 4:
+        return (
+          <NumberOfWheelsSelector
+            value={formData.numberOfWheels}
+            onChange={handleInputChange('numberOfWheels')}
+            error={formErrors.numberOfWheels}
+          />
+        );
+      case 5:
+        return (
+          <VehicleTypeSelector
+            value={formData.vehicleType}
+            onChange={handleInputChange('vehicleType')}
+            vehicleTypes={filteredVehicleTypes}
+            numberOfWheels={
+              formData.numberOfWheels
+                ? parseInt(formData.numberOfWheels)
+                : undefined
+            }
+            loading={vehicleTypesLoading}
+            error={formErrors.vehicleType}
+          />
+        );
+      case 6:
+        return (
+          <VehicleModelSelector
+            value={formData.vehicleModel}
+            onChange={handleInputChange('vehicleModel')}
+            vehicleModels={filteredVehicleModels}
+            selectedTypeId={formData.vehicleType}
+            loading={vehicleModelsLoading}
+            error={formErrors.vehicleModel}
+          />
+        );
       default:
         return null;
     }
@@ -279,23 +327,28 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
         };
       case 2:
         return {
+          title: 'Contact Information',
+          subtitle: 'Please provide your contact details',
+        };
+      case 3:
+        return {
+          title: 'Rental Period',
+          subtitle: 'When would you like to rent the vehicle?',
+        };
+      case 4:
+        return {
           title: 'Vehicle Category',
           subtitle: 'How many wheels does your vehicle have?',
         };
-      case 3:
+      case 5:
         return {
           title: 'Vehicle Type',
           subtitle: 'What type of vehicle are you looking for?',
         };
-      case 4:
+      case 6:
         return {
           title: 'Vehicle Model',
-          subtitle: 'Choose the specific model you prefer',
-        };
-      case 5:
-        return {
-          title: 'Rental Period',
-          subtitle: 'When would you like to rent the vehicle?',
+          subtitle: 'Choose from available vehicles for your dates',
         };
       default:
         return { title: '', subtitle: '' };

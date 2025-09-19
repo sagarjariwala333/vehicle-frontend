@@ -15,22 +15,14 @@ import {
   removeNotification,
 } from '../store';
 import ReduxFormWizard from '../components/organisms/ReduxFormWizard';
-import { FormData } from '../store/types';
 
 const VehicleBookingPage: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage] = useState('');
 
   const dispatch = useAppDispatch();
   const notifications = useAppSelector(selectNotifications);
   const isSubmitting = useAppSelector(selectIsSubmitting);
-
-  const handleFormSubmit = async () => {
-    // The form submission is handled by the ReduxFormWizard component
-    // This is just a callback to handle success
-    setSuccessMessage('Your vehicle booking has been submitted successfully!');
-    setShowSuccess(true);
-  };
 
   const handleStepChange = (step: number) => {
     console.log(`Current step: ${step}`);
@@ -74,10 +66,7 @@ const VehicleBookingPage: React.FC = () => {
       )}
 
       <Paper elevation={3} sx={{ p: 4 }}>
-        <ReduxFormWizard
-          onSubmit={handleFormSubmit}
-          onStepChange={handleStepChange}
-        />
+        <ReduxFormWizard onStepChange={handleStepChange} />
       </Paper>
 
       {/* Success Snackbar */}

@@ -1,4 +1,5 @@
 export { default as NameFields } from './NameFields';
+export { default as ContactFields } from './ContactFields';
 export { default as NumberOfWheelsSelector } from './NumberOfWheelsSelector';
 export { default as VehicleTypeSelector } from './VehicleTypeSelector';
 export { default as VehicleModelSelector } from './VehicleModelSelector';

@@ -80,7 +80,7 @@ const VehicleModelSelector: React.FC<VehicleModelSelectorProps> = ({
       {filteredModels.length === 0 && !loading && selectedTypeId && (
         <Box mt={1}>
           <ErrorMessage
-            message="No models available for the selected vehicle type"
+            message="No vehicles available for the selected dates and type. Please try different dates or vehicle type."
             variant="alert"
             severity="info"
           />

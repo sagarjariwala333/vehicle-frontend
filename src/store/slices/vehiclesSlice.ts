@@ -63,6 +63,48 @@ export const fetchVehicleModels = createAsyncThunk(
   }
 );
 
+export const fetchAvailableVehicleModels = createAsyncThunk(
+  'vehicles/fetchAvailableModels',
+  async (
+    params: { typeId: string; startDate: string; endDate: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      // First get all vehicles of the type
+      const response = await vehiclesAPI.getByType(params.typeId);
+      const allVehicles = response.data.data || response.data;
+
+      // Then check availability for each vehicle
+      const availableVehicles = [];
+      for (const vehicle of allVehicles) {
+        try {
+          const availabilityResponse = await vehiclesAPI.checkAvailability(
+            vehicle.id,
+            params.startDate,
+            params.endDate
+          );
+          if (availabilityResponse.data.data?.available) {
+            availableVehicles.push(vehicle);
+          }
+        } catch {
+          // If availability check fails, assume vehicle is not available
+          console.warn(
+            `Could not check availability for vehicle ${vehicle.id}`
+          );
+        }
+      }
+
+      return availableVehicles;
+    } catch (error: any) {
+      console.error('Failed to fetch available vehicle models:', error);
+      return rejectWithValue(
+        error.response?.data?.message ||
+          'Failed to fetch available vehicle models'
+      );
+    }
+  }
+);
+
 const vehiclesSlice = createSlice({
   name: 'vehicles',
   initialState,
@@ -111,6 +153,22 @@ const vehiclesSlice = createSlice({
         state.models.error = null;
       })
       .addCase(fetchVehicleModels.rejected, (state, action) => {
+        state.models.loading = false;
+        state.models.error = action.payload as string;
+      });
+
+    // Available Vehicle Models
+    builder
+      .addCase(fetchAvailableVehicleModels.pending, (state) => {
+        state.models.loading = true;
+        state.models.error = null;
+      })
+      .addCase(fetchAvailableVehicleModels.fulfilled, (state, action) => {
+        state.models.loading = false;
+        state.models.data = action.payload;
+        state.models.error = null;
+      })
+      .addCase(fetchAvailableVehicleModels.rejected, (state, action) => {
         state.models.loading = false;
         state.models.error = action.payload as string;
       });
