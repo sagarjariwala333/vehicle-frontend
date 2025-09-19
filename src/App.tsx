@@ -12,6 +12,7 @@ import {
 import theme from './theme';
 import ComponentDemo from './components/ComponentDemo';
 import MoleculeDemo from './components/MoleculeDemo';
+import OrganismDemo from './components/OrganismDemo';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,6 +53,7 @@ const App: React.FC = () => {
         >
           <Tab label="Atoms" />
           <Tab label="Molecules" />
+          <Tab label="Organisms" />
         </Tabs>
       </AppBar>
 
@@ -60,6 +62,9 @@ const App: React.FC = () => {
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
         <MoleculeDemo />
+      </TabPanel>
+      <TabPanel value={tabValue} index={2}>
+        <OrganismDemo />
       </TabPanel>
     </ThemeProvider>
   );
