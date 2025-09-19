@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AppBar,
   Toolbar,
@@ -8,7 +9,7 @@ import {
 import theme from './theme';
 import ComponentDemo from './components/ComponentDemo';
 
-function App() {
+const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -22,6 +23,6 @@ function App() {
       <ComponentDemo />
     </ThemeProvider>
   );
-}
+};
 
 export default App;

@@ -1,12 +1,24 @@
+import React, { ReactNode, ChangeEvent } from 'react';
 import {
   FormControl,
   FormLabel,
   RadioGroup,
   FormHelperText,
+  FormControlProps,
 } from '@mui/material';
-import PropTypes from 'prop-types';
 
-const RadioGroupField = ({
+interface RadioGroupFieldProps extends Omit<FormControlProps, 'onChange'> {
+  title: string;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  children: ReactNode;
+  error?: boolean;
+  helperText?: string;
+  required?: boolean;
+  row?: boolean;
+}
+
+const RadioGroupField: React.FC<RadioGroupFieldProps> = ({
   title,
   value,
   onChange,
@@ -26,17 +38,6 @@ const RadioGroupField = ({
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
-};
-
-RadioGroupField.propTypes = {
-  title: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  required: PropTypes.bool,
-  row: PropTypes.bool,
 };
 
 export default RadioGroupField;

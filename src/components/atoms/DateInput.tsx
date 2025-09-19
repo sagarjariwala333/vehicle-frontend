@@ -1,7 +1,20 @@
-import { TextField } from '@mui/material';
-import PropTypes from 'prop-types';
+import React, { ChangeEvent } from 'react';
+import { TextField, TextFieldProps } from '@mui/material';
 
-const DateInput = ({
+interface DateInputProps extends Omit<TextFieldProps, 'onChange' | 'type'> {
+  label: string;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  error?: boolean;
+  helperText?: string;
+  required?: boolean;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  minDate?: string;
+  maxDate?: string;
+}
+
+const DateInput: React.FC<DateInputProps> = ({
   label,
   value,
   onChange,
@@ -36,19 +49,6 @@ const DateInput = ({
       {...props}
     />
   );
-};
-
-DateInput.propTypes = {
-  label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  required: PropTypes.bool,
-  disabled: PropTypes.bool,
-  fullWidth: PropTypes.bool,
-  minDate: PropTypes.string,
-  maxDate: PropTypes.string,
 };
 
 export default DateInput;

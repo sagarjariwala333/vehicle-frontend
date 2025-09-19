@@ -1,7 +1,15 @@
+import React from 'react';
 import { Box, Typography } from '@mui/material';
-import PropTypes from 'prop-types';
 
-const ProgressDots = ({
+interface ProgressDotsProps {
+  currentStep: number;
+  totalSteps: number;
+  showNumbers?: boolean;
+  size?: 'small' | 'medium' | 'large';
+  color?: string;
+}
+
+const ProgressDots: React.FC<ProgressDotsProps> = ({
   currentStep,
   totalSteps,
   showNumbers = false,
@@ -62,14 +70,6 @@ const ProgressDots = ({
       })}
     </Box>
   );
-};
-
-ProgressDots.propTypes = {
-  currentStep: PropTypes.number.isRequired,
-  totalSteps: PropTypes.number.isRequired,
-  showNumbers: PropTypes.bool,
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
-  color: PropTypes.string,
 };
 
 export default ProgressDots;

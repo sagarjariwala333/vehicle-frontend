@@ -1,7 +1,20 @@
-import { Button, CircularProgress } from '@mui/material';
-import PropTypes from 'prop-types';
+import React, { ReactNode, MouseEvent } from 'react';
+import { Button, CircularProgress, ButtonProps } from '@mui/material';
 
-const PrimaryButton = ({
+interface PrimaryButtonProps extends Omit<ButtonProps, 'onClick'> {
+  children: ReactNode;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  loading?: boolean;
+  disabled?: boolean;
+  variant?: 'contained' | 'outlined' | 'text';
+  size?: 'small' | 'medium' | 'large';
+  fullWidth?: boolean;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  className?: string;
+}
+
+const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   children,
   onClick,
   loading = false,
@@ -36,19 +49,6 @@ const PrimaryButton = ({
       {loading ? 'Loading...' : children}
     </Button>
   );
-};
-
-PrimaryButton.propTypes = {
-  children: PropTypes.node.isRequired,
-  onClick: PropTypes.func.isRequired,
-  loading: PropTypes.bool,
-  disabled: PropTypes.bool,
-  variant: PropTypes.oneOf(['contained', 'outlined', 'text']),
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
-  fullWidth: PropTypes.bool,
-  startIcon: PropTypes.node,
-  endIcon: PropTypes.node,
-  className: PropTypes.string,
 };
 
 export default PrimaryButton;

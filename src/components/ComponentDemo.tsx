@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { Container, Typography, Box, Paper, Grid } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import {
@@ -12,20 +12,40 @@ import {
   Loader,
 } from './atoms';
 
-const ComponentDemo = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [gender, setGender] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(2);
+const ComponentDemo: React.FC = () => {
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [gender, setGender] = useState<string>('');
+  const [birthDate, setBirthDate] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [currentStep, setCurrentStep] = useState<number>(2);
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setCurrentStep(currentStep < 5 ? currentStep + 1 : 1);
     }, 2000);
+  };
+
+  const handleFirstNameChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ): void => {
+    setFirstName(event.target.value);
+  };
+
+  const handleLastNameChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setLastName(event.target.value);
+  };
+
+  const handleGenderChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setGender(event.target.value);
+  };
+
+  const handleBirthDateChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ): void => {
+    setBirthDate(event.target.value);
   };
 
   return (
@@ -45,14 +65,14 @@ const ComponentDemo = () => {
               <TextInput
                 label="First Name"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={handleFirstNameChange}
                 placeholder="Enter your first name"
                 required
               />
               <TextInput
                 label="Last Name"
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={handleLastNameChange}
                 error={lastName === 'error'}
                 helperText={
                   lastName === 'error'
@@ -74,7 +94,7 @@ const ComponentDemo = () => {
             <RadioGroupField
               title="Gender"
               value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              onChange={handleGenderChange}
               helperText="Please select your gender"
               required
             >
@@ -82,19 +102,19 @@ const ComponentDemo = () => {
                 value="male"
                 label="Male"
                 checked={gender === 'male'}
-                onChange={(e) => setGender(e.target.value)}
+                onChange={handleGenderChange}
               />
               <RadioOption
                 value="female"
                 label="Female"
                 checked={gender === 'female'}
-                onChange={(e) => setGender(e.target.value)}
+                onChange={handleGenderChange}
               />
               <RadioOption
                 value="other"
                 label="Other"
                 checked={gender === 'other'}
-                onChange={(e) => setGender(e.target.value)}
+                onChange={handleGenderChange}
               />
             </RadioGroupField>
           </Paper>
@@ -109,7 +129,7 @@ const ComponentDemo = () => {
             <DateInput
               label="Birth Date"
               value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
+              onChange={handleBirthDateChange}
               helperText="Select your birth date"
               maxDate="2024-12-31"
             />

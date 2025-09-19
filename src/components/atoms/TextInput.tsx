@@ -1,7 +1,20 @@
-import { TextField } from '@mui/material';
-import PropTypes from 'prop-types';
+import React, { ChangeEvent } from 'react';
+import { TextField, TextFieldProps } from '@mui/material';
 
-const TextInput = ({
+interface TextInputProps extends Omit<TextFieldProps, 'onChange'> {
+  label: string;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  error?: boolean;
+  helperText?: string;
+  placeholder?: string;
+  required?: boolean;
+  disabled?: boolean;
+  type?: string;
+  fullWidth?: boolean;
+}
+
+const TextInput: React.FC<TextInputProps> = ({
   label,
   value,
   onChange,
@@ -30,19 +43,6 @@ const TextInput = ({
       {...props}
     />
   );
-};
-
-TextInput.propTypes = {
-  label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  placeholder: PropTypes.string,
-  required: PropTypes.bool,
-  disabled: PropTypes.bool,
-  type: PropTypes.string,
-  fullWidth: PropTypes.bool,
 };
 
 export default TextInput;

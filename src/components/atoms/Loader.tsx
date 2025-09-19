@@ -1,11 +1,20 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { Box, CircularProgress, Typography, BoxProps } from '@mui/material';
 
-const Loader = ({
+interface LoaderProps extends BoxProps {
+  size?: number;
+  message?: string;
+  showMessage?: boolean;
+  variant?: 'determinate' | 'indeterminate';
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  fullScreen?: boolean;
+}
+
+const Loader: React.FC<LoaderProps> = ({
   size = 40,
   message = 'Loading...',
   showMessage = true,
-  variant = 'circular',
+  variant = 'indeterminate',
   color = 'primary',
   fullScreen = false,
   ...props
@@ -48,22 +57,6 @@ const Loader = ({
   }
 
   return LoaderComponent;
-};
-
-Loader.propTypes = {
-  size: PropTypes.number,
-  message: PropTypes.string,
-  showMessage: PropTypes.bool,
-  variant: PropTypes.oneOf(['determinate', 'indeterminate']),
-  color: PropTypes.oneOf([
-    'primary',
-    'secondary',
-    'error',
-    'info',
-    'success',
-    'warning',
-  ]),
-  fullScreen: PropTypes.bool,
 };
 
 export default Loader;
