@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
         bgcolor: 'grey.50',
       }}
     >
-      <Container maxWidth="md" sx={{ flex: 1, py: 4 }}>
+      <Box sx={{ flex: 1, py: 4, px: 2 }}>
         <Box mb={4} textAlign="center">
           <Typography variant="h3" component="h1" gutterBottom>
             Vehicle Rental Booking
@@ -32,11 +32,14 @@ const HomePage: React.FC = () => {
             borderRadius: 2,
             boxShadow: 3,
             p: 4,
+            mx: 'auto',
+            maxWidth: '100%',
+            width: '100%',
           }}
         >
           <ReduxFormWizard onStepChange={handleStepChange} />
         </Box>
-      </Container>
+      </Box>
     </Box>
   );
 };

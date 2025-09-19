@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Box, Container, Paper, Typography, Alert } from '@mui/material';
+import { Box, Paper, Typography, Alert } from '@mui/material';
 import { NavigationBar } from '../molecules';
 
 interface QuestionScreenProps {
@@ -40,7 +40,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
   showProgressNumbers = false,
 }) => {
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Box sx={{ py: 4, px: 2, width: '100%' }}>
       <Paper
         elevation={3}
         sx={{
@@ -49,6 +49,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
           minHeight: '60vh',
           display: 'flex',
           flexDirection: 'column',
+          width: '100%',
         }}
       >
         {/* Header Section */}
@@ -106,7 +107,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
           />
         </Box>
       </Paper>
-    </Container>
+    </Box>
   );
 };
 
