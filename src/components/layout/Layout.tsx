@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -6,9 +6,12 @@ import {
   Button,
   Box,
   Container,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,14 +20,26 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleHomeClick = () => {
     navigate('/');
   };
 
-  const handleBookingClick = () => {
-    navigate('/vehicle');
+  const handleDemosClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
+
+  const handleDemosClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDemoNavigation = (path: string) => {
+    navigate(path);
+    handleDemosClose();
+  };
+
+  const isDemoPath = location.pathname.startsWith('/demos');
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -53,14 +68,41 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </Button>
             <Button
               color="inherit"
-              onClick={handleBookingClick}
+              onClick={handleDemosClick}
+              endIcon={<ArrowDropDownIcon />}
               sx={{
-                textDecoration:
-                  location.pathname === '/vehicle' ? 'underline' : 'none',
+                textDecoration: isDemoPath ? 'underline' : 'none',
               }}
             >
-              Book Vehicle
+              Demos
             </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleDemosClose}
+            >
+              <MenuItem onClick={() => handleDemoNavigation('/demos/atoms')}>
+                Atoms
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleDemoNavigation('/demos/molecules')}
+              >
+                Molecules
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleDemoNavigation('/demos/organisms')}
+              >
+                Organisms
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleDemoNavigation('/demos/templates')}
+              >
+                Templates
+              </MenuItem>
+              <MenuItem onClick={() => handleDemoNavigation('/demos/redux')}>
+                Redux
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>
