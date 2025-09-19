@@ -14,12 +14,20 @@ export interface VehicleType {
   id: string;
   name: string;
   wheels: number;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface VehicleModel {
   id: string;
-  name: string;
-  typeId: string;
+  type_id: string;
+  model_name: string;
+  registration_number: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  vehicle_type?: VehicleType;
 }
 
 // Form Validation Errors

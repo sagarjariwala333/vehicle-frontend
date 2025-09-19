@@ -4,8 +4,12 @@ import { RadioGroupField, RadioOption, ErrorMessage, Loader } from '../atoms';
 
 interface VehicleModel {
   id: string;
-  name: string;
-  typeId: string;
+  type_id: string;
+  model_name: string;
+  registration_number: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface VehicleModelSelectorProps {
@@ -31,7 +35,7 @@ const VehicleModelSelector: React.FC<VehicleModelSelectorProps> = ({
 }) => {
   // Filter vehicle models based on selected type if provided
   const filteredModels = selectedTypeId
-    ? vehicleModels.filter((model) => model.typeId === selectedTypeId)
+    ? vehicleModels.filter((model) => model.type_id === selectedTypeId)
     : vehicleModels;
 
   if (loading) {
@@ -57,12 +61,12 @@ const VehicleModelSelector: React.FC<VehicleModelSelectorProps> = ({
         required={required}
         row={false}
       >
-        {filteredModels.map((model) => (
+        {filteredModels.map((vehicle) => (
           <RadioOption
-            key={model.id}
-            value={model.id}
-            label={model.name}
-            checked={value === model.id}
+            key={vehicle.id}
+            value={vehicle.id}
+            label={`${vehicle.model_name} (${vehicle.registration_number})`}
+            checked={value === vehicle.id}
             onChange={onChange}
             disabled={disabled}
           />

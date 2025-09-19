@@ -23,6 +23,7 @@ import {
   fetchVehicleModels,
 } from '../../store/slices/vehiclesSlice';
 import { setSubmitting, addNotification } from '../../store/slices/uiSlice';
+import { submitBooking } from '../../services/bookingService';
 import QuestionScreen from './QuestionScreen';
 import {
   NameFields,
@@ -68,7 +69,8 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
   // Load vehicle types when number of wheels changes
   useEffect(() => {
     if (formData.numberOfWheels) {
-      dispatch(fetchVehicleTypes());
+      const wheels = parseInt(formData.numberOfWheels);
+      dispatch(fetchVehicleTypes(wheels));
       dispatch(resetVehicleType());
     }
   }, [formData.numberOfWheels, dispatch]);
@@ -153,29 +155,33 @@ const ReduxFormWizard: React.FC<ReduxFormWizardProps> = ({
         if (onSubmit) {
           await onSubmit(formData);
         } else {
-          // Default success simulation
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          // Submit to backend API
+          const result = await submitBooking(formData);
+          console.log('Booking created:', result.booking);
         }
 
         dispatch(
           addNotification({
-            message: 'Form submitted successfully!',
+            message: 'Booking created successfully!',
             type: 'success',
           })
         );
 
         // Reset form after successful submission
         dispatch(resetForm());
-      } catch (error) {
+      } catch (error: any) {
         console.error('Form submission error:', error);
+        const errorMessage =
+          error.message || 'Failed to submit booking. Please try again.';
+
         dispatch(
           setFormErrors({
-            general: 'Failed to submit form. Please try again.',
+            general: errorMessage,
           })
         );
         dispatch(
           addNotification({
-            message: 'Failed to submit form. Please try again.',
+            message: errorMessage,
             type: 'error',
           })
         );

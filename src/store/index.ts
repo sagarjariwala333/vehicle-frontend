@@ -7,6 +7,34 @@ import vehiclesReducer from './slices/vehiclesSlice';
 import uiReducer from './slices/uiSlice';
 import userReducer from './slices/userSlice';
 
+// Import actions
+import {
+  updateFormField,
+  updateFormData,
+  setFormErrors,
+  clearFormErrors,
+  clearFieldError,
+  setCurrentStep,
+  nextStep,
+  previousStep,
+  resetForm,
+  setFormValid,
+  resetVehicleType,
+  resetVehicleModel,
+} from './slices/formSlice';
+
+import {
+  setTheme,
+  toggleSidebar,
+  setSidebarOpen,
+  setSubmitting,
+  showSuccess,
+  hideSuccess,
+  addNotification,
+  removeNotification,
+  clearNotifications,
+} from './slices/uiSlice';
+
 export const store = configureStore({
   reducer: {
     form: formReducer,
@@ -69,6 +97,8 @@ export const selectSuccessMessage = (state: RootState) =>
 export const selectFilteredVehicleTypes =
   (numberOfWheels?: number) => (state: RootState) => {
     const types = selectVehicleTypes(state);
+    // Ensure types is an array before filtering
+    if (!Array.isArray(types)) return [];
     if (!numberOfWheels) return types;
     return types.filter((type) => type.wheels === numberOfWheels);
   };
@@ -76,8 +106,35 @@ export const selectFilteredVehicleTypes =
 export const selectFilteredVehicleModels =
   (typeId?: string) => (state: RootState) => {
     const models = selectVehicleModels(state);
+    // Ensure models is an array before filtering
+    if (!Array.isArray(models)) return [];
     if (!typeId) return models;
-    return models.filter((model) => model.typeId === typeId);
+    return models.filter((model) => model.type_id === typeId);
   };
+
+// Export actions
+export {
+  updateFormField,
+  updateFormData,
+  setFormErrors,
+  clearFormErrors,
+  clearFieldError,
+  setCurrentStep,
+  nextStep,
+  previousStep,
+  resetForm,
+  setFormValid,
+  resetVehicleType,
+  resetVehicleModel,
+  setTheme,
+  toggleSidebar,
+  setSidebarOpen,
+  setSubmitting,
+  showSuccess,
+  hideSuccess,
+  addNotification,
+  removeNotification,
+  clearNotifications,
+};
 
 export default store;
